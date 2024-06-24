@@ -3,7 +3,7 @@
 // UIView+Extension.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,6 +14,13 @@ import Foundation
 import UIKit
 
 extension UIView {
+    func superview<T>(of type: T.Type) -> T? {
+        superview as? T ?? superview.flatMap { $0.superview(of: type) }
+    }
+
+    func subview<T>(of type: T.Type) -> T? {
+        subviews.compactMap { $0 as? T ?? $0.subview(of: type) }.first
+    }
 
     // Even though we do not set it animated - it can happen during the animated batch update
     // http://www.openradar.me/25087688
@@ -29,7 +36,6 @@ extension UIView {
             isHidden = newValue
         }
     }
-
 }
 
 extension UIViewController {

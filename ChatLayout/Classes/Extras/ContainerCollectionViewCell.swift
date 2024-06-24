@@ -3,7 +3,7 @@
 // ContainerCollectionViewCell.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import UIKit
 
 /// A container `UICollectionViewCell` that constraints its contained view to its margins.
 public final class ContainerCollectionViewCell<CustomView: UIView>: UICollectionViewCell {
-
     /// Default reuse identifier is set with the class name.
     public static var reuseIdentifier: String {
         String(describing: self)
@@ -93,5 +92,4 @@ public final class ContainerCollectionViewCell<CustomView: UIView>: UICollection
             customView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor)
         ])
     }
-
 }

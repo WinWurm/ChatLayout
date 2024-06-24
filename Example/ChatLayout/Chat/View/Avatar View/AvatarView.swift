@@ -3,7 +3,7 @@
 // AvatarView.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,7 +14,13 @@ import ChatLayout
 import Foundation
 import UIKit
 
+// Just to visually test `ChatLayout.supportSelfSizingInvalidation`
+protocol AvatarViewDelegate: AnyObject {
+    func avatarTapped()
+}
+
 final class AvatarView: UIView, StaticViewFactory {
+    weak var delegate: AvatarViewDelegate?
 
     private lazy var circleImageView = RoundedCornersContainerView<UIImageView>(frame: bounds)
 
@@ -31,7 +37,7 @@ final class AvatarView: UIView, StaticViewFactory {
     }
 
     func reloadData() {
-        guard let controller = controller else {
+        guard let controller else {
             return
         }
         UIView.performWithoutAnimation {
@@ -63,6 +69,14 @@ final class AvatarView: UIView, StaticViewFactory {
         circleImageView.heightAnchor.constraint(equalTo: circleImageView.widthAnchor, multiplier: 1).isActive = true
 
         circleImageView.customView.contentMode = .scaleAspectFill
+
+        let gestureRecogniser = UITapGestureRecognizer()
+        circleImageView.addGestureRecognizer(gestureRecogniser)
+        gestureRecogniser.addTarget(self, action: #selector(avatarTapped))
     }
 
+    @objc
+    private func avatarTapped() {
+        delegate?.avatarTapped()
+    }
 }

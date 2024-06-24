@@ -3,7 +3,7 @@
 // ItemSize.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,11 +15,12 @@ import UIKit
 
 /// Represents desired item size.
 public enum ItemSize: Hashable {
-
-    /// Item size should be fully calculated by the `CollectionViewChatLayout`. Initial estimated size will be taken from `ChatLayoutSettings`.
+    /// Item size should be fully calculated by the `CollectionViewChatLayout`.
+    /// Initial estimated size will be taken from `ChatLayoutSettings`.
     case auto
 
-    /// Item size should be fully calculated by the `CollectionViewChatLayout`. Initial estimated size should be taken from the value provided.
+    /// Item size should be fully calculated by the `CollectionViewChatLayout`.
+    /// Initial estimated size should be taken from the value provided.
     case estimated(CGSize)
 
     /// Item size should be exactly equal to the value provided.
@@ -39,11 +40,11 @@ public enum ItemSize: Hashable {
     public var caseType: CaseType {
         switch self {
         case .auto:
-            return .auto
+            .auto
         case .estimated:
-            return .estimated
+            .estimated
         case .exact:
-            return .exact
+            .exact
         }
     }
 
@@ -60,5 +61,4 @@ public enum ItemSize: Hashable {
             hasher.combine(size.height)
         }
     }
-
 }

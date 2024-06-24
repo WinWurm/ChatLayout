@@ -3,7 +3,7 @@
 // URLController.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,14 +15,19 @@ import LinkPresentation
 
 @available(iOS 13, *)
 final class URLController {
-
     let url: URL
 
     var metadata: LPLinkMetadata?
 
     weak var delegate: ReloadDelegate?
 
-    weak var view: URLView?
+    weak var view: URLView? {
+        didSet {
+            UIView.performWithoutAnimation {
+                view?.reloadData()
+            }
+        }
+    }
 
     private let provider = LPMetadataProvider()
 
@@ -43,23 +48,27 @@ final class URLController {
             view?.reloadData()
         } else {
             provider.startFetchingMetadata(for: url) { [weak self] metadata, error in
-                guard let self = self,
-                      let metadata = metadata,
+                guard let self,
+                      let metadata,
                       error == nil else {
                     return
                 }
 
-                try? metadataCache.store(entity: metadata, for: self.url)
+                try? metadataCache.store(entity: metadata, for: url)
 
                 DispatchQueue.main.async { [weak self] in
-                    guard let self = self else {
+                    guard let self else {
                         return
                     }
-                    self.delegate?.reloadMessage(with: self.messageId)
+                    if #available(iOS 16.0, *),
+                       enableSelfSizingSupport {
+                        self.metadata = metadata
+                        view?.reloadData()
+                    } else {
+                        delegate?.reloadMessage(with: messageId)
+                    }
                 }
             }
         }
-
     }
-
 }

@@ -3,19 +3,19 @@
 // DifferenceKit+Extension.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
 // https://github.com/sponsors/ekazaev
 //
 
+import ChatLayout
 import DifferenceKit
 import Foundation
 import UIKit
 
 public extension UICollectionView {
-
     func reload<C>(
         using stagedChangeset: StagedChangeset<C>,
         interrupt: ((Changeset<C>) -> Bool)? = nil,
@@ -25,7 +25,7 @@ public extension UICollectionView {
     ) {
         if case .none = window, let data = stagedChangeset.last?.data {
             setData(data)
-            if let onInterruptedReload = onInterruptedReload {
+            if let onInterruptedReload {
                 onInterruptedReload()
             } else {
                 reloadData()
@@ -44,9 +44,9 @@ public extension UICollectionView {
             : nil
 
         for changeset in stagedChangeset {
-            if let interrupt = interrupt, interrupt(changeset), let data = stagedChangeset.last?.data {
+            if let interrupt, interrupt(changeset), let data = stagedChangeset.last?.data {
                 setData(data)
-                if let onInterruptedReload = onInterruptedReload {
+                if let onInterruptedReload {
                     onInterruptedReload()
                 } else {
                     reloadData()
@@ -88,9 +88,16 @@ public extension UICollectionView {
                 }
 
                 if !changeset.elementUpdated.isEmpty {
-                    reloadItems(at: changeset.elementUpdated.map {
+                    let indexPaths = changeset.elementUpdated.map {
                         IndexPath(item: $0.element, section: $0.section)
-                    })
+                    }
+                    if #available(iOS 15.0, *),
+                       enableReconfigure {
+                        reconfigureItems(at: indexPaths)
+                        (collectionViewLayout as? CollectionViewChatLayout)?.reconfigureItems(at: indexPaths)
+                    } else {
+                        reloadItems(at: indexPaths)
+                    }
                 }
 
                 for (source, target) in changeset.elementMoved {
@@ -102,11 +109,9 @@ public extension UICollectionView {
             completion!(true)
         }
     }
-
 }
 
 extension StagedChangeset {
-
     // DifferenceKit splits different type of actions into the different change sets to avoid the limitations of UICollectionView
     // But it may lead to the situations that `UICollectionViewLayout` doesnt know what change will happen next within the single portion
     // of changes. As we know that at least insertions and deletions can be processed together, we fix that in the StagedChangeset we got from
@@ -121,5 +126,4 @@ extension StagedChangeset {
         }
         return self
     }
-
 }

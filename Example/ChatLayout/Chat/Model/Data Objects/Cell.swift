@@ -3,7 +3,7 @@
 // Cell.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -16,7 +16,6 @@ import Foundation
 import UIKit
 
 enum Cell: Hashable {
-
     enum BubbleType {
         case normal
         case tailed
@@ -30,44 +29,35 @@ enum Cell: Hashable {
 
     case date(DateGroup)
 
-    case deliveryStatus
-
     var alignment: ChatItemAlignment {
         switch self {
         case let .message(message, _):
-            return message.type == .incoming ? .leading : .trailing
-        case .deliveryStatus:
-            return .trailing
+            message.type == .incoming ? .leading : .trailing
         case .typingIndicator:
-            return .leading
+            .leading
         case let .messageGroup(group):
-            return group.type == .incoming ? .leading : .trailing
+            group.type == .incoming ? .leading : .trailing
         case .date:
-            return .center
+            .center
         }
     }
-
 }
 
 extension Cell: Differentiable {
-
     public var differenceIdentifier: Int {
         switch self {
         case let .message(message, _):
-            return message.differenceIdentifier
-        case .deliveryStatus:
-            return hashValue
+            message.differenceIdentifier
         case .typingIndicator:
-            return hashValue
+            hashValue
         case let .messageGroup(group):
-            return group.differenceIdentifier
+            group.differenceIdentifier
         case let .date(group):
-            return group.differenceIdentifier
+            group.differenceIdentifier
         }
     }
 
     public func isContentEqual(to source: Cell) -> Bool {
         self == source
     }
-
 }

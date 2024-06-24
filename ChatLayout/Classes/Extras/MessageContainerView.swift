@@ -3,7 +3,7 @@
 // MessageContainerView.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import UIKit
 
 /// A container view that helps to layout the message view and its accessory
 public final class MessageContainerView<AccessoryViewFactory: StaticViewFactory, MainView: UIView>: UIView {
-
     private lazy var stackView = UIStackView(frame: bounds)
 
     /// An accessory view.
@@ -76,7 +75,7 @@ public final class MessageContainerView<AccessoryViewFactory: StaticViewFactory,
             stackView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
 
-        if let accessoryView = accessoryView {
+        if let accessoryView {
             stackView.addArrangedSubview(accessoryView)
             accessoryView.translatesAutoresizingMaskIntoConstraints = false
         }
@@ -84,5 +83,4 @@ public final class MessageContainerView<AccessoryViewFactory: StaticViewFactory,
         internalContentView.translatesAutoresizingMaskIntoConstraints = false
         stackView.addArrangedSubview(internalContentView)
     }
-
 }

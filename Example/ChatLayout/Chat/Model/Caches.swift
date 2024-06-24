@@ -3,7 +3,7 @@
 // Caches.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -21,7 +21,7 @@ var metadataCache = IterativeCache(mainCache: MetaDataCache(cache: MemoryDataCac
 let imageCache = IterativeCache(mainCache: ImageForUrlCache(cache: MemoryDataCache<CacheableImageKey>()),
                                 backupCache: ImageForUrlCache(cache: PersistentDataCache<CacheableImageKey>()))
 
-// Uncomment to reload dynamic content on every start.
+//// Uncomment to reload dynamic content on every start.
 // @available(iOS 13, *)
 // var metadataCache = MetaDataCache(cache: MemoryDataCache<URL>())
 //

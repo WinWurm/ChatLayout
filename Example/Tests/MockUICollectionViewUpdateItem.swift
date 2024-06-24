@@ -3,7 +3,7 @@
 // MockUICollectionViewUpdateItem.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import UIKit
 
 class MockUICollectionViewUpdateItem: UICollectionViewUpdateItem {
-
     // swiftlint:disable identifier_name
     var _indexPathBeforeUpdate: IndexPath?
     var _indexPathAfterUpdate: IndexPath?
@@ -40,5 +39,4 @@ class MockUICollectionViewUpdateItem: UICollectionViewUpdateItem {
     override var updateAction: Action {
         _updateAction
     }
-
 }

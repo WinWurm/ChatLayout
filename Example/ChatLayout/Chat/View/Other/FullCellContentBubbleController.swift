@@ -3,7 +3,7 @@
 // FullCellContentBubbleController.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import UIKit
 
 final class FullCellContentBubbleController<CustomView: UIView>: BubbleController {
-
     weak var bubbleView: BezierMaskedView<CustomView>? {
         didSet {
             setupBubbleView()
@@ -28,7 +27,7 @@ final class FullCellContentBubbleController<CustomView: UIView>: BubbleControlle
     }
 
     private func setupBubbleView() {
-        guard let bubbleView = bubbleView else {
+        guard let bubbleView else {
             return
         }
 
@@ -37,5 +36,4 @@ final class FullCellContentBubbleController<CustomView: UIView>: BubbleControlle
             bubbleView.customView.layoutMargins = .zero
         }
     }
-
 }

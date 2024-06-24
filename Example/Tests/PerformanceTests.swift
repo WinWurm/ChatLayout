@@ -3,7 +3,7 @@
 // PerformanceTests.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,16 +15,15 @@ import Foundation
 import XCTest
 
 final class PerformanceTests: XCTestCase {
-
     func testBinarySearchPerformance() {
         let constant = 1257
         let predicate: (Int) -> ComparisonResult = { integer in
             if integer < constant {
-                return .orderedAscending
+                .orderedAscending
             } else if integer > constant {
-                return .orderedDescending
+                .orderedDescending
             } else {
-                return .orderedSame
+                .orderedSame
             }
         }
         let values = (0...100000).map { $0 }
@@ -40,11 +39,11 @@ final class PerformanceTests: XCTestCase {
         let constant = 1257
         let predicate: (Int) -> ComparisonResult = { integer in
             if integer < constant {
-                return .orderedAscending
+                .orderedAscending
             } else if integer > constant + 111 {
-                return .orderedDescending
+                .orderedDescending
             } else {
-                return .orderedSame
+                .orderedSame
             }
         }
         let values = (0...100000).map { $0 }
@@ -70,13 +69,12 @@ final class PerformanceTests: XCTestCase {
 
         let rect = CGRect(origin: CGPoint(x: 0, y: 99999), size: CGSize(width: 300, height: 2))
         let attributes = layout.controller.layoutAttributesForElements(in: rect, state: .beforeUpdate, ignoreCache: true)
-        XCTAssertEqual(attributes.count, 4)
+        XCTAssertEqual(attributes.count, 2)
         measure {
             for _ in 0..<10 {
                 _ = layout.controller.layoutAttributesForElements(in: rect, state: .beforeUpdate, ignoreCache: true)
             }
         }
-
     }
 
     func testInsertionPerformance() {
@@ -127,9 +125,8 @@ final class PerformanceTests: XCTestCase {
         layout.controller.set(layout.getPreparedSections(), at: .beforeUpdate)
         measure {
             for i in 0..<1000 {
-                layout.controller.update(preferredSize: CGSize(width: 300, height: 300 + i), alignment: .center, for: ItemPath(item: i, section: 0), kind: .cell, at: .beforeUpdate)
+                layout.controller.update(preferredSize: CGSize(width: 300, height: 300 + i), alignment: .center, interItemSpacing: 0, for: ItemPath(item: i, section: 0), kind: .cell, at: .beforeUpdate)
             }
         }
     }
-
 }

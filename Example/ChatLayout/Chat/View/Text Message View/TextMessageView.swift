@@ -3,7 +3,7 @@
 // TextMessageView.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import UIKit
 
 final class TextMessageView: UIView, ContainerCollectionViewCellDelegate {
-
     private var viewPortWidth: CGFloat = 300
 
     private lazy var textView = MessageTextView()
@@ -39,7 +38,7 @@ final class TextMessageView: UIView, ContainerCollectionViewCellDelegate {
     }
 
     // Uncomment this method to test the performance without calculating text cell size using autolayout
-    // For the better illustration set DefaultRandomDataProvider.enableRichContent/enableNewMessages/enableRichContent
+    // For the better illustration set DefaultRandomDataProvider.enableRichContent/enableNewMessages
     // to false
 //    func preferredLayoutAttributesFitting(_ layoutAttributes: ChatLayoutAttributes) -> ChatLayoutAttributes? {
 //        viewPortWidth = layoutAttributes.layoutFrame.width
@@ -71,7 +70,7 @@ final class TextMessageView: UIView, ContainerCollectionViewCellDelegate {
     }
 
     func reloadData() {
-        guard let controller = controller else {
+        guard let controller else {
             return
         }
         textView.text = controller.text
@@ -127,12 +126,22 @@ final class TextMessageView: UIView, ContainerCollectionViewCellDelegate {
             setNeedsLayout()
         }
     }
+}
 
+extension TextMessageView: AvatarViewDelegate {
+    func avatarTapped() {
+        if enableSelfSizingSupport {
+            layoutMargins = layoutMargins == .zero ? UIEdgeInsets(top: 50, left: 0, bottom: 50, right: 0) : .zero
+            setNeedsLayout()
+            if let cell = superview(of: UICollectionViewCell.self) {
+                cell.contentView.invalidateIntrinsicContentSize()
+            }
+        }
+    }
 }
 
 /// UITextView with hacks to avoid selection
 private final class MessageTextView: UITextView {
-
     override var isFocused: Bool {
         false
     }
@@ -148,5 +157,4 @@ private final class MessageTextView: UITextView {
     override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         false
     }
-
 }

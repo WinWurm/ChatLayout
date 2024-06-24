@@ -3,7 +3,7 @@
 // StateControllerInternalTests.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,13 +14,12 @@
 import XCTest
 
 class StateControllerInternalTests: XCTestCase {
-
     func testUpdatePreferredSize() {
         let layout = MockCollectionLayout()
         layout.controller.set(layout.getPreparedSections(), at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 300, height: 100), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 300, height: 300), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 300, height: 100), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 300, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 300, height: 300), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 300, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
         XCTAssertEqual(layout.controller.itemFrame(for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)?.size, CGSize(width: 300, height: 100))
         XCTAssertEqual(layout.controller.itemFrame(for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)?.size, CGSize(width: 300, height: 100))
         XCTAssertEqual(layout.controller.itemFrame(for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)?.size, CGSize(width: 300, height: 300))
@@ -32,15 +31,15 @@ class StateControllerInternalTests: XCTestCase {
         layout.settings.additionalInsets = UIEdgeInsets(top: 0, left: 13, bottom: 0, right: 7)
         layout.controller.set(layout.getPreparedSections(), at: .beforeUpdate)
 
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 300), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, for: ItemPath(item: 1, section: 0), kind: .cell, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 300), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 1, section: 0), kind: .cell, at: .beforeUpdate)
 
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .leading, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .trailing, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
-        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .fullWidth, for: ItemPath(item: 1, section: 0), kind: .cell, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .leading, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .trailing, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .center, interItemSpacing: 0, for: ItemPath(item: 0, section: 0), kind: .cell, at: .beforeUpdate)
+        layout.controller.update(preferredSize: CGSize(width: 100, height: 100), alignment: .fullWidth, interItemSpacing: 0, for: ItemPath(item: 1, section: 0), kind: .cell, at: .beforeUpdate)
 
         XCTAssertEqual(layout.controller.itemAttributes(for: ItemPath(item: 0, section: 0), kind: .header, at: .beforeUpdate)?.alignment, .trailing)
         XCTAssertEqual(layout.controller.itemAttributes(for: ItemPath(item: 0, section: 0), kind: .footer, at: .beforeUpdate)?.alignment, .leading)
@@ -135,9 +134,8 @@ class StateControllerInternalTests: XCTestCase {
         layout.settings.additionalInsets = UIEdgeInsets(top: 10, left: 20, bottom: 30, right: 40)
         layout.controller.set(layout.getPreparedSections(), at: .beforeUpdate)
 
-        let estimatedContentHeight = layout.settings.additionalInsets.top + layout.settings.additionalInsets.bottom + layout.settings.estimatedItemSize!.height * (7 * 3) + layout.settings.interItemSpacing * (5 * 3) + layout.settings.interSectionSpacing * 2
+        let estimatedContentHeight = layout.settings.additionalInsets.top + layout.settings.additionalInsets.bottom + layout.settings.estimatedItemSize!.height * (7 * 3) + layout.settings.interItemSpacing * (4 * 3) + layout.settings.interSectionSpacing * 2
         XCTAssertEqual(layout.controller.contentHeight(at: .beforeUpdate), estimatedContentHeight)
         XCTAssertEqual(layout.controller.contentSize(for: .beforeUpdate), CGSize(width: layout.viewSize.width - 0.0001, height: estimatedContentHeight))
     }
-
 }

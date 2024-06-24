@@ -3,7 +3,7 @@
 // DefaultChatController.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,7 +14,6 @@ import ChatLayout
 import Foundation
 
 final class DefaultChatController: ChatController {
-
     weak var delegate: ChatControllerDelegate?
 
     private let dataProvider: RandomDataProvider
@@ -78,10 +77,10 @@ final class DefaultChatController: ChatController {
     private func propagateLatestMessages(completion: @escaping ([Section]) -> Void) {
         var lastMessageStorage: Message?
         dispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
-            let messagesSplitByDay = self.messages
+            let messagesSplitByDay = messages
                 .map { Message(id: $0.id,
                                date: $0.date,
                                data: self.convert($0.data),
@@ -154,17 +153,16 @@ final class DefaultChatController: ChatController {
                 completion([Section(id: 0, title: "Loading...", cells: Array(cells))])
             }
         }
-
     }
 
     private func convert(_ data: Message.Data) -> RawMessage.Data {
         switch data {
         case let .url(url, isLocallyStored: _):
-            return .url(url)
+            .url(url)
         case let .image(source, isLocallyStored: _):
-            return .image(source)
+            .image(source)
         case let .text(text):
-            return .text(text)
+            .text(text)
         }
     }
 
@@ -182,9 +180,9 @@ final class DefaultChatController: ChatController {
             func isPresentLocally(_ source: ImageMessageSource) -> Bool {
                 switch source {
                 case .image:
-                    return true
+                    true
                 case let .imageURL(url):
-                    return imageCache.isEntityCached(for: CacheableImageKey(url: url))
+                    imageCache.isEntityCached(for: CacheableImageKey(url: url))
                 }
             }
             return .image(source, isLocallyStored: isPresentLocally(source))
@@ -198,11 +196,9 @@ final class DefaultChatController: ChatController {
             self.delegate?.update(with: sections, requiresIsolatedProcess: requiresIsolatedProcess)
         }
     }
-
 }
 
 extension DefaultChatController: RandomDataProviderDelegate {
-
     func received(messages: [RawMessage]) {
         appendConvertingToMessages(messages)
         markAllMessagesAsReceived {
@@ -232,16 +228,16 @@ extension DefaultChatController: RandomDataProviderDelegate {
     }
 
     func markAllMessagesAsReceived(completion: @escaping () -> Void) {
-        guard let lastReceivedUUID = lastReceivedUUID else {
+        guard let lastReceivedUUID else {
             completion()
             return
         }
         dispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             var finished = false
-            self.messages = self.messages.map { message in
+            messages = messages.map { message in
                 guard !finished, message.status != .received, message.status != .read else {
                     if message.id == lastReceivedUUID {
                         finished = true
@@ -262,16 +258,16 @@ extension DefaultChatController: RandomDataProviderDelegate {
     }
 
     func markAllMessagesAsRead(completion: @escaping () -> Void) {
-        guard let lastReadUUID = lastReadUUID else {
+        guard let lastReadUUID else {
             completion()
             return
         }
         dispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
             var finished = false
-            self.messages = self.messages.map { message in
+            messages = messages.map { message in
                 guard !finished, message.status != .read else {
                     if message.id == lastReadUUID {
                         finished = true
@@ -290,22 +286,17 @@ extension DefaultChatController: RandomDataProviderDelegate {
             }
         }
     }
-
 }
 
 extension DefaultChatController: ReloadDelegate {
-
     func reloadMessage(with id: UUID) {
         repopulateMessages()
     }
-
 }
 
 extension DefaultChatController: EditingAccessoryControllerDelegate {
-
     func deleteMessage(with id: UUID) {
         messages = Array(messages.filter { $0.id != id })
         repopulateMessages(requiresIsolatedProcess: true)
     }
-
 }

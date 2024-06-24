@@ -3,7 +3,7 @@
 // MainContainerView.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import UIKit
 
 final class MainContainerView<LeadingAccessory: StaticViewFactory, CustomView: UIView, TrailingAccessory: StaticViewFactory>: UIView, SwipeNotifierDelegate {
-
     var swipeCompletionRate: CGFloat = 0 {
         didSet {
             updateOffsets()
@@ -101,7 +100,7 @@ final class MainContainerView<LeadingAccessory: StaticViewFactory, CustomView: U
     }
 
     private func updateOffsets() {
-        if let avatarView = avatarView,
+        if let avatarView,
            !avatarView.isHidden {
             avatarView.transform = CGAffineTransform(translationX: -((avatarView.bounds.width + accessorySafeAreaInsets.left) * swipeCompletionRate), y: 0)
         }
@@ -113,7 +112,7 @@ final class MainContainerView<LeadingAccessory: StaticViewFactory, CustomView: U
             let maxOffset = min(frame.origin.x, accessoryView.frame.width)
             customView.transform = .identity
             customView.transform = CGAffineTransform(translationX: -(maxOffset * swipeCompletionRate), y: 0)
-            if let statusView = statusView,
+            if let statusView,
                !statusView.isHidden {
                 statusView.transform = CGAffineTransform(translationX: -(maxOffset * swipeCompletionRate), y: 0)
             }
@@ -121,5 +120,4 @@ final class MainContainerView<LeadingAccessory: StaticViewFactory, CustomView: U
 
         accessoryView.transform = CGAffineTransform(translationX: -((accessoryView.bounds.width + accessorySafeAreaInsets.right) * swipeCompletionRate), y: 0)
     }
-
 }

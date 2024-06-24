@@ -3,7 +3,7 @@
 // DefaultRandomDataProvider.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,7 +14,6 @@ import Foundation
 import UIKit
 
 protocol RandomDataProviderDelegate: AnyObject {
-
     func received(messages: [RawMessage])
 
     func typingStateChanged(to state: TypingState)
@@ -22,21 +21,17 @@ protocol RandomDataProviderDelegate: AnyObject {
     func lastReadIdChanged(to id: UUID)
 
     func lastReceivedIdChanged(to id: UUID)
-
 }
 
 protocol RandomDataProvider {
-
     func loadInitialMessages(completion: @escaping ([RawMessage]) -> Void)
 
     func loadPreviousMessages(completion: @escaping ([RawMessage]) -> Void)
 
     func stop()
-
 }
 
 final class DefaultRandomDataProvider: RandomDataProvider {
-
     weak var delegate: RandomDataProviderDelegate?
 
     private var messageTimer: Timer?
@@ -101,15 +96,15 @@ final class DefaultRandomDataProvider: RandomDataProvider {
         restartMessageTimer()
         restartTypingTimer()
         dispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
-            let messages = self.createBunchOfMessages(number: 50)
+            let messages = createBunchOfMessages(number: 50)
             if messages.count > 10 {
-                self.lastReceivedUUID = messages[messages.count - 10].id
+                lastReceivedUUID = messages[messages.count - 10].id
             }
             if messages.count > 3 {
-                self.lastReadUUID = messages[messages.count - 3].id
+                lastReadUUID = messages[messages.count - 3].id
             }
             DispatchQueue.main.async {
                 completion(messages)
@@ -119,10 +114,10 @@ final class DefaultRandomDataProvider: RandomDataProvider {
 
     func loadPreviousMessages(completion: @escaping ([RawMessage]) -> Void) {
         dispatchQueue.async { [weak self] in
-            guard let self = self else {
+            guard let self else {
                 return
             }
-            let messages = self.createBunchOfMessages(number: 50)
+            let messages = createBunchOfMessages(number: 50)
 
             DispatchQueue.main.async {
                 completion(messages)
@@ -211,5 +206,4 @@ final class DefaultRandomDataProvider: RandomDataProvider {
         }
         return messages
     }
-
 }

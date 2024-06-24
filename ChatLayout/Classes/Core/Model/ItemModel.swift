@@ -3,7 +3,7 @@
 // ItemModel.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,15 +14,14 @@ import Foundation
 import UIKit
 
 struct ItemModel {
-
     struct Configuration {
-
         let alignment: ChatItemAlignment
 
         let preferredSize: CGSize
 
         let calculatedSize: CGSize?
 
+        let interItemSpacing: CGFloat
     }
 
     let id: UUID
@@ -37,8 +36,10 @@ struct ItemModel {
 
     var alignment: ChatItemAlignment
 
+    var interItemSpacing: CGFloat
+
     var size: CGSize {
-        guard let calculatedSize = calculatedSize else {
+        guard let calculatedSize else {
             return preferredSize
         }
 
@@ -53,18 +54,19 @@ struct ItemModel {
         self.id = id
         alignment = configuration.alignment
         preferredSize = configuration.preferredSize
+        interItemSpacing = configuration.interItemSpacing
         calculatedSize = configuration.calculatedSize
         calculatedOnce = configuration.calculatedSize != nil
     }
 
-    // We are just resetting `calculatedSize` if needed as the actual size will be found in invalidationContext(forPreferredLayoutAttributes:, withOriginalAttributes:)
+    // We are just resetting `calculatedSize` if needed as the actual size will be found in
+    // `invalidationContext(forPreferredLayoutAttributes:, withOriginalAttributes:)`.
     // It is important for the rotation to keep previous frame size.
     mutating func resetSize() {
-        guard let calculatedSize = calculatedSize else {
+        guard let calculatedSize else {
             return
         }
         self.calculatedSize = nil
         preferredSize = calculatedSize
     }
-
 }

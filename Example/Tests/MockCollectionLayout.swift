@@ -3,7 +3,7 @@
 // MockCollectionLayout.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import UIKit
 
 class MockCollectionLayout: ChatLayoutRepresentation, ChatLayoutDelegate {
-
     var numberOfItemsInSection: [Int: Int] = [0: 100, 1: 100, 2: 100]
     var shouldPresentHeaderAtSection: [Int: Bool] = [0: true, 1: true, 2: true]
     var shouldPresentFooterAtSection: [Int: Bool] = [0: true, 1: true, 2: true]
@@ -45,6 +44,8 @@ class MockCollectionLayout: ChatLayoutRepresentation, ChatLayoutDelegate {
 
     let keepContentOffsetAtBottomOnBatchUpdates: Bool = true
 
+    let keepContentAtBottomOfVisibleArea: Bool = false
+
     let processOnlyVisibleItemsOnAnimatedBatchUpdates: Bool = true
 
     func numberOfItems(in section: Int) -> Int {
@@ -52,7 +53,7 @@ class MockCollectionLayout: ChatLayoutRepresentation, ChatLayoutDelegate {
     }
 
     func configuration(for element: ItemKind, at indexPath: IndexPath) -> ItemModel.Configuration {
-        .init(alignment: .fullWidth, preferredSize: settings.estimatedItemSize!, calculatedSize: settings.estimatedItemSize!)
+        .init(alignment: .fullWidth, preferredSize: settings.estimatedItemSize!, calculatedSize: settings.estimatedItemSize!, interItemSpacing: settings.interItemSpacing)
     }
 
     func shouldPresentHeader(at sectionIndex: Int) -> Bool {
@@ -75,6 +76,10 @@ class MockCollectionLayout: ChatLayoutRepresentation, ChatLayoutDelegate {
         .estimated(settings.estimatedItemSize!)
     }
 
+    func interSectionSpacing(at sectionIndex: Int) -> CGFloat {
+        settings.interSectionSpacing
+    }
+
     func getPreparedSections() -> ContiguousArray<SectionModel<MockCollectionLayout>> {
         var sections: ContiguousArray<SectionModel<MockCollectionLayout>> = []
         for sectionIndex in 0..<numberOfItemsInSection.count {
@@ -88,11 +93,10 @@ class MockCollectionLayout: ChatLayoutRepresentation, ChatLayoutDelegate {
                 items.append(ItemModel(with: configuration(for: .cell, at: indexPath)))
             }
 
-            var section = SectionModel(header: header, footer: footer, items: items, collectionLayout: self)
+            var section = SectionModel(interSectionSpacing: interSectionSpacing(at: sectionIndex), header: header, footer: footer, items: items, collectionLayout: self)
             section.assembleLayout()
             sections.append(section)
         }
         return sections
     }
-
 }

@@ -3,7 +3,7 @@
 // ContainerCollectionReusableView.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import UIKit
 
 /// A container `UICollectionReusableView` that constraints its contained view to its margins.
 public final class ContainerCollectionReusableView<CustomView: UIView>: UICollectionReusableView {
-
     /// Default reuse identifier is set with the class name.
     public static var reuseIdentifier: String {
         String(describing: self)
@@ -91,5 +90,4 @@ public final class ContainerCollectionReusableView<CustomView: UIView>: UICollec
             customView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
     }
-
 }

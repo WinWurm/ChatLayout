@@ -3,7 +3,7 @@
 // ImageController.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,17 +14,18 @@ import Foundation
 import UIKit
 
 final class ImageController {
-
     weak var view: ImageView? {
         didSet {
-            view?.reloadData()
+            UIView.performWithoutAnimation {
+                view?.reloadData()
+            }
         }
     }
 
     weak var delegate: ReloadDelegate?
 
     var state: ImageViewState {
-        guard let image = image else {
+        guard let image else {
             return .loading
         }
         return .image(image)
@@ -52,11 +53,18 @@ final class ImageController {
                 self.image = image
                 view?.reloadData()
             } else {
-                loader.loadImage(from: url) { [weak self] _ in
-                    guard let self = self else {
+                loader.loadImage(from: url) { [weak self] result in
+                    guard let self,
+                          case let .success(image) = result else {
                         return
                     }
-                    self.delegate?.reloadMessage(with: self.messageId)
+                    if #available(iOS 16.0, *),
+                       enableSelfSizingSupport {
+                        self.image = image
+                        view?.reloadData()
+                    } else {
+                        delegate?.reloadMessage(with: messageId)
+                    }
                 }
             }
         case let .image(image):
@@ -64,5 +72,4 @@ final class ImageController {
             view?.reloadData()
         }
     }
-
 }

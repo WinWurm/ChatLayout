@@ -3,7 +3,7 @@
 // HelpersTests.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,7 +15,6 @@ import Foundation
 import XCTest
 
 final class HelpersTests: XCTestCase {
-
     func testItemKindInit() {
         let header = ItemKind(UICollectionView.elementKindSectionHeader)
         XCTAssertTrue(header == ItemKind.header)
@@ -46,11 +45,11 @@ final class HelpersTests: XCTestCase {
     func testBinarySearch() {
         let predicate: (Int) -> ComparisonResult = { integer in
             if integer < 100 {
-                return .orderedAscending
+                .orderedAscending
             } else if integer > 100 {
-                return .orderedDescending
+                .orderedDescending
             } else {
-                return .orderedSame
+                .orderedSame
             }
         }
         XCTAssertEqual([Int]().binarySearch(predicate: predicate), nil)
@@ -65,14 +64,42 @@ final class HelpersTests: XCTestCase {
         XCTAssertEqual((150...170).map { $0 }.binarySearch(predicate: predicate), nil)
     }
 
+    func testBinarySearchWithCGRect() {
+        let visibleRect = CGRect(origin: .init(x: 0, y: 100), size: .init(width: 100, height: 100))
+        let predicate: (CGRect) -> ComparisonResult = { frame in
+            if frame.intersects(visibleRect) {
+                return .orderedSame
+            } else if frame.minY >= visibleRect.maxY {
+                return .orderedDescending
+            } else if frame.maxX <= visibleRect.minY {
+                return .orderedAscending
+            }
+            XCTFail("Should not get here")
+            return .orderedSame
+        }
+        XCTAssertEqual([CGRect]().binarySearch(predicate: predicate), nil)
+        XCTAssertEqual((0...5).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearch(predicate: predicate), 3)
+        XCTAssertEqual((-1...1).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearch(predicate: predicate), nil)
+        XCTAssertEqual((1...1).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearch(predicate: predicate), nil)
+        XCTAssertEqual((4...7).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearch(predicate: predicate), nil)
+        XCTAssertEqual((4...4).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearch(predicate: predicate), nil)
+
+        XCTAssertEqual([CGRect]().binarySearchRange(predicate: predicate), [])
+        XCTAssertEqual((0...5).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearchRange(predicate: predicate).count, 2)
+        XCTAssertEqual((-1...1).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearchRange(predicate: predicate).count, 0)
+        XCTAssertEqual((1...1).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearchRange(predicate: predicate).count, 0)
+        XCTAssertEqual((4...7).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearchRange(predicate: predicate).count, 0)
+        XCTAssertEqual((4...4).map { CGRect(origin: .init(x: 0, y: $0 * 50), size: .init(width: 100, height: 50)) }.binarySearchRange(predicate: predicate).count, 0)
+    }
+
     func testSearchInRange() {
         let predicate: (Int) -> ComparisonResult = { integer in
             if integer < 100 {
-                return .orderedAscending
+                .orderedAscending
             } else if integer > 200 {
-                return .orderedDescending
+                .orderedDescending
             } else {
-                return .orderedSame
+                .orderedSame
             }
         }
         XCTAssertEqual([Int]().binarySearchRange(predicate: predicate), [])
@@ -104,5 +131,4 @@ final class HelpersTests: XCTestCase {
         XCTAssertEqual(dictionary[.exact(.zero)], 3)
         XCTAssertEqual(dictionary[.exact(size)], 4)
     }
-
 }

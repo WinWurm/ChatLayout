@@ -3,7 +3,7 @@
 // ChatLayoutDelegate.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -15,18 +15,15 @@ import UIKit
 
 /// Represents the point in time when `CollectionViewChatLayout` asks about layout attributes modification.
 public enum InitialAttributesRequestType: Hashable {
-
     /// `UICollectionView` initially asks about the layout of an item.
     case initial
 
     /// An item is being invalidated.
     case invalidation
-
 }
 
 /// `CollectionViewChatLayout` delegate
 public protocol ChatLayoutDelegate: AnyObject {
-
     /// `CollectionViewChatLayout` will call this method to ask if it should present the header in the current layout.
     /// - Parameters:
     ///   - chatLayout: `CollectionViewChatLayout` reference.
@@ -103,11 +100,28 @@ public protocol ChatLayoutDelegate: AnyObject {
                                              at indexPath: IndexPath,
                                              modifying originalAttributes: ChatLayoutAttributes)
 
+    ///   Returns the interval between items. If returns `nil` - the value from `ChatLayoutSettings` will be used.
+    ///
+    /// - Parameters:
+    ///   - chatLayout: `CollectionViewChatLayout` reference.
+    ///   - kind: Type of element represented by `ItemKind`.
+    ///   - indexPath: Index path of the item.
+    func interItemSpacing(_ chatLayout: CollectionViewChatLayout,
+                          of kind: ItemKind,
+                          after indexPath: IndexPath) -> CGFloat?
+
+    ///   Returns the interval between sections. If returns `nil` - the value from `ChatLayoutSettings` will be used.
+    ///
+    /// - Parameters:
+    ///   - chatLayout: `CollectionViewChatLayout` reference.
+    ///   - kind: Type of element represented by `ItemKind`.
+    ///   - sectionIndex: Index of the section.
+    func interSectionSpacing(_ chatLayout: CollectionViewChatLayout,
+                             after sectionIndex: Int) -> CGFloat?
 }
 
 /// Default extension.
 public extension ChatLayoutDelegate {
-
     /// Default implementation returns: `false`.
     func shouldPresentHeader(_ chatLayout: CollectionViewChatLayout,
                              at sectionIndex: Int) -> Bool {
@@ -151,4 +165,16 @@ public extension ChatLayoutDelegate {
         originalAttributes.alpha = 0
     }
 
+    /// Default implementation returns: `nil`.
+    func interItemSpacing(_ chatLayout: CollectionViewChatLayout,
+                          of kind: ItemKind,
+                          after indexPath: IndexPath) -> CGFloat? {
+        nil
+    }
+
+    /// Default implementation returns: `nil`.
+    func interSectionSpacing(_ chatLayout: CollectionViewChatLayout,
+                             after sectionIndex: Int) -> CGFloat? {
+        nil
+    }
 }

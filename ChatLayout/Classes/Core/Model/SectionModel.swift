@@ -3,7 +3,7 @@
 // SectionModel.swift
 // https://github.com/ekazaev/ChatLayout
 //
-// Created by Eugene Kazaev in 2020-2022.
+// Created by Eugene Kazaev in 2020-2024.
 // Distributed under the MIT license.
 //
 // Become a sponsor:
@@ -14,8 +14,9 @@ import Foundation
 import UIKit
 
 struct SectionModel<Layout: ChatLayoutRepresentation> {
-
     let id: UUID
+
+    let interSectionSpacing: CGFloat
 
     private(set) var header: ItemModel?
 
@@ -36,7 +37,7 @@ struct SectionModel<Layout: ChatLayoutRepresentation> {
     }
 
     var height: CGFloat {
-        if let footer = footer {
+        if let footer {
             return footer.frame.maxY
         } else {
             guard let lastItem = items.last else {
@@ -51,11 +52,13 @@ struct SectionModel<Layout: ChatLayoutRepresentation> {
     }
 
     init(id: UUID = UUID(),
+         interSectionSpacing: CGFloat,
          header: ItemModel?,
          footer: ItemModel?,
          items: ContiguousArray<ItemModel> = [],
          collectionLayout: Layout) {
         self.id = id
+        self.interSectionSpacing = interSectionSpacing
         self.items = items
         self.collectionLayout = collectionLayout
         self.header = header
@@ -73,7 +76,8 @@ struct SectionModel<Layout: ChatLayoutRepresentation> {
         items.withUnsafeMutableBufferPointer { directlyMutableItems in
             for rowIndex in 0..<directlyMutableItems.count {
                 directlyMutableItems[rowIndex].offsetY = offsetY
-                offsetY += directlyMutableItems[rowIndex].size.height + collectionLayout.settings.interItemSpacing
+                let offset: CGFloat = rowIndex < directlyMutableItems.count - 1 ? directlyMutableItems[rowIndex].interItemSpacing : 0
+                offsetY += directlyMutableItems[rowIndex].size.height + offset
             }
         }
 
@@ -185,5 +189,4 @@ struct SectionModel<Layout: ChatLayoutRepresentation> {
         }
         items.remove(at: index)
     }
-
 }
